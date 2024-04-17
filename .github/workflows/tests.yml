@@ -1,12 +1,8 @@
 name: Composer and PHP Action
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  schedule:
+    - cron: '*/5 * * * *' # Chạy action sau mỗi 5 phút
 
 jobs:
   build:
@@ -19,7 +15,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '7.4' # Bạn có thể thay đổi phiên bản PHP tại đây
 
       - name: Install Composer dependencies
         run: composer install
@@ -38,13 +34,6 @@ jobs:
           OCI_SHAPE: ${{ secrets.OCI_SHAPE }}
           OCI_SSH_PUBLIC_KEY: ${{ secrets.OCI_SSH_PUBLIC_KEY }}
           TELEGRAM_USER_ID: ${{ secrets.TELEGRAM_USER_ID }}
-          TELEGRAM_BOT_API_TOKEN: ${{ secrets.TELEGRAM_BOT_API_TOKEN }}
+          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           OCI_OCPUS: ${{ secrets.OCI_OCPUS }}
           OCI_MEMORY_IN_GBS: ${{ secrets.OCI_MEMORY_IN_GBS }}
-
-      - name: Send Telegram message
-        uses: appleboy/telegram-action@v1
-        with:
-          to: ${{ secrets.TELEGRAM_USER_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_API_TOKEN }}
-          message: "File PHP đã chạy thành công."
