@@ -33,8 +33,6 @@ $config = new OciConfig(
     getenv('OCI_AVAILABILITY_DOMAIN') ?: null, // null or '' or 'jYtI:PHX-AD-1' or ['jYtI:PHX-AD-1','jYtI:PHX-AD-2']
     getenv('OCI_SUBNET_ID'),
     getenv('OCI_IMAGE_ID'),
-    (int) getenv('TELEGRAM_USER_ID'),
-    getenv('TELEGRAM_BOT_API_KEY'),
     (int) getenv('OCI_OCPUS'),
     (int) getenv('OCI_MEMORY_IN_GBS')
 );
