@@ -1,43 +1,26 @@
-name: Integration Tests
+name: Composer and PHP Action
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  schedule:
+    - cron: '*/5 * * * *' # Chạy action sau mỗi 5 phút
 
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3']
-    name: Integration Tests (PHP ${{ matrix.php-versions }})
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Install PHP
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
-      - name: Validate composer.json and composer.lock
-        run: composer validate
+          php-version: '7.4' # Bạn có thể thay đổi phiên bản PHP tại đây
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.php-version }}-composer-
-      - name: Install dependencies
-        run: |
-          composer update --prefer-dist --no-progress
-      - name: Run test suite
+      - name: Install Composer dependencies
+        run: composer install
+
+      - name: Run PHP script
         run: php ./index.php
         env:
           OCI_REGION: ${{ secrets.OCI_REGION }}
@@ -48,11 +31,9 @@ jobs:
           OCI_AVAILABILITY_DOMAIN: ${{ secrets.OCI_AVAILABILITY_DOMAIN }}
           OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
           OCI_IMAGE_ID: ${{ secrets.OCI_IMAGE_ID }}
-          OCI_OCPUS: ${{ secrets.OCI_OCPUS }}
-          OCI_MEMORY_IN_GBS: ${{ secrets.OCI_MEMORY_IN_GBS }}
           OCI_SHAPE: ${{ secrets.OCI_SHAPE }}
-          OCI_MAX_INSTANCES: ${{ secrets.OCI_MAX_INSTANCES }}
           OCI_SSH_PUBLIC_KEY: ${{ secrets.OCI_SSH_PUBLIC_KEY }}
           TELEGRAM_USER_ID: ${{ secrets.TELEGRAM_USER_ID }}
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
-          TOO_MANY_REQUESTS_TIME_WAIT: ${{ secrets.TOO_MANY_REQUESTS_TIME_WAIT }}
+          OCI_OCPUS: ${{ secrets.OCI_OCPUS }}
+          OCI_MEMORY_IN_GBS: ${{ secrets.OCI_MEMORY_IN_GBS }}
