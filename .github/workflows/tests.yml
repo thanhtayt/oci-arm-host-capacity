@@ -2,7 +2,7 @@ name: Composer and PHP Action
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Chạy action sau mỗi 5 phút
+    - cron: '* * * * *' # Chạy action sau mỗi 1 phút
 
 jobs:
   build:
